@@ -131,3 +131,29 @@ func (h *Handler) ListTasks(ctx context.Context, req *taskpb.ListTaskRequest) (*
 		Tasks: pbTasks,
 	}, nil
 }
+
+func (h *Handler) ListUserTasks(ctx context.Context, req *taskpb.ListUserTasksRequest) (*taskpb.ListTaskResponse, error) {
+	log.Printf("Listing tasks for user ID: %d", req.GetUserId())
+
+	tasks, err := h.svc.ListUserTasks(
+		uint(req.GetUserId()),
+		int(req.GetLimit()),
+		int(req.GetOffset()),
+	)
+
+	if err != nil {
+		log.Printf("Failed to list user tasks: %v", err)
+		return nil, status.Error(codes.Internal, "failed to list user tasks")
+	}
+
+	var pbTasks []*taskpb.Task
+	for _, t := range tasks {
+		pbTasks = append(pbTasks, &taskpb.Task{
+			Id:     uint32(t.ID),
+			Title:  t.Title,
+			UserId: uint32(t.UserID),
+		})
+	}
+
+	return &taskpb.ListTaskResponse{Tasks: pbTasks}, nil
+}

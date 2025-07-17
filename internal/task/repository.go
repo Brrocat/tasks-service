@@ -43,3 +43,15 @@ func (r *Repository) ListTasks(limit, offset int) ([]Task, error) {
 	}
 	return tasks, nil
 }
+
+func (r *Repository) ListUserTasks(userID uint, limit, offset int) ([]Task, error) {
+	var tasks []Task
+	if err := r.db.Where("user_id = ?", userID).
+		Limit(limit).
+		Offset(offset).
+		Find(&tasks).Error; err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
+}

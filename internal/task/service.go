@@ -27,3 +27,7 @@ func (s *Service) DeleteTask(id uint) error {
 func (s *Service) ListTasks(limit, offset int) ([]Task, error) {
 	return s.repo.ListTasks(limit, offset)
 }
+
+func (s *Service) ListUserTasks(userID uint, limit, offset int) ([]Task, error) {
+	return s.repo.ListUserTasks(userID, limit, offset)
+}
